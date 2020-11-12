@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import './NavMenu.css';
 
 export class NavMenu extends Component {
@@ -27,13 +27,13 @@ export class NavMenu extends Component {
                 <p />
                 <ul>
                     <li>
-                        <Link to="/">Home</Link>
+                        <NavLink to="/">Home</NavLink>
                     </li>
                     <li>
-                        <Link to="/counter">Counter</Link>
+                        <NavLink to="/counter" activeClassName='activeRoute'>Counter</NavLink>
                     </li>
                     <li>
-                        <Link to="/fetch-data">Fetch data</Link>
+                        <NavLink to="/fetch-data" activeClassName='activeRoute'>Fetch data</NavLink>
                     </li>
                 </ul>
                 <Link to='/login'>Login</Link>
