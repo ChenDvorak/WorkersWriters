@@ -14,10 +14,7 @@ html {
 
 body {
   margin: auto !important;
-}
-
-.logo-medium {
-  text-align: center;
+  padding: 8px;
 }
 
 .actions-row {

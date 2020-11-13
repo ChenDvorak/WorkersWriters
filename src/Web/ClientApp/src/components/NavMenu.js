@@ -29,12 +29,6 @@ export class NavMenu extends Component {
                     <li>
                         <NavLink to="/">Home</NavLink>
                     </li>
-                    <li>
-                        <NavLink to="/counter" activeClassName='activeRoute'>Counter</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/fetch-data" activeClassName='activeRoute'>Fetch data</NavLink>
-                    </li>
                 </ul>
                 <Link to='/login'>Login</Link>
             </header>
