@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router';
+import { Redirect, Route, Switch } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
@@ -16,6 +16,9 @@ export default class App extends Component {
       <div>
         <Switch>
         <Route path='/login' component={Login} />
+        <Route exact path='/auth'>
+          <Redirect to='login'/>
+        </Route>
       <Route path='/'>
       <Layout>
         <Route exact path='/' component={Home} />

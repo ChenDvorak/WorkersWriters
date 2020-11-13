@@ -1,37 +1,69 @@
 ﻿import React, { useState } from 'react';
 import { Box, Button, Container, TextField } from '@material-ui/core'
-
+import { LogoLarge, LogoMedium } from '../components/Logo'
 import './Login.css';
 
 export function Login(props) {
 
     const [step, setStep] = useState(LOGIN_STEP.InputAccount)
 
+    function confirmAccount(e) {
+        setStep(LOGIN_STEP.InputPassword);
+    }
+
+    function confirmPassword() {
+
+    }
+
     return (
+        <div className='background'>
         <Container maxWidth='xs'>
-            <div className='logo'>
-                Workers Writers
-            </div>
-            {
-                step === LOGIN_STEP.InputAccount 
-                ? <AccountBox nextStepEvent={() => {setStep(LOGIN_STEP.InputPassword)}} />
-                : <TextField label='Password' type='password' fullWidth margin='normal' />
-            }
-            
-            
+            <Box mt={20}>
+                <LogoLarge />
+                <LogoMedium />
+                {
+                    step === LOGIN_STEP.InputAccount
+                    ? <AccountBox nextStepEvent={confirmAccount} />
+                    : <PasswordBox confirmPasswordEvent={confirmPassword}/>
+                }
+            </Box>
         </Container>
+        </div>
     );
 }
 
 function AccountBox(props) {
 
     return (
-        <Box>
-            <TextField label='Account' fullWidth margin='normal' />
-                <Button 
-                    variant='contained' color='primary'
-                    onClick={() => {props.nextStepEvent()}}>按钮</Button>
-        </Box> 
+        <Box m={2}>
+            <TextField label='Account' variant='outlined' fullWidth margin='normal' />
+            <Box className='actions-row'>
+                <Box ml={1}>
+                    <Button
+                        variant='contained' color='primary'
+                        onClick={() => {props.nextStepEvent()}}>confirm</Button>
+                </Box>
+                <Button variant='outlined' color='primary'>Register</Button>
+            </Box>
+        </Box>
+    );
+}
+
+function PasswordBox(props) {
+    return (
+        <Box m={2}>
+            <TextField label='Password' variant='outlined' fullWidth margin='normal' />
+            <Box className='actions-row'>
+                <Box m={1}>
+                    <Button 
+                        variant='contained' color='primary'
+                        onClick={() => {props.confirmPasswordEvent()}}>Submit</Button>
+                    </Box>
+                <Box m={1}>
+                    <Button color='primary' variant='outlined'>Forgot</Button>
+                </Box>
+            </Box>
+        </Box>
     );
 }
 
