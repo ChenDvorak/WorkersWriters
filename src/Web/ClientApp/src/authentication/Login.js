@@ -2,7 +2,6 @@
 import { Box, Button, Container, TextField, makeStyles, Grid, IconButton } from '@material-ui/core'
 import { ArrowBack } from '@material-ui/icons';
 import { LogoLarge } from '../components/Logo'
-import './Login.css';
 
 const LOGIN_STEP = {
     InputAccount: 0,
@@ -19,17 +18,41 @@ const useStyles = makeStyles({
     }
 });
 
+const loginInfo = {
+    account: '',
+    password: '',
+    step: LOGIN_STEP.InputAccount
+};
+
 export default function Login(props) {
     const classes = useStyles();
 
-    const [step, setStep] = useState(LOGIN_STEP.InputAccount)
+    const [loginModel, setLoginModel] = useState(loginInfo)
 
-    function confirmAccount(e) {
-        setStep(LOGIN_STEP.InputPassword);
+    function confirmAccount(accountValue) {
+        const newLogin = {
+            account: accountValue,
+            step: LOGIN_STEP.InputPassword
+        };
+        setLoginModel(newLogin);
     }
 
     function back() {
-        setStep(LOGIN_STEP.InputAccount);
+        const newLogin = {
+            account: loginModel.account,
+            password: '',
+            step: LOGIN_STEP.InputAccount
+        };
+        setLoginModel(newLogin);
+    }
+
+    function handleSubmit(passwordValue) {
+        const postLogin = {
+            account: loginModel.account,
+            password: passwordValue
+        }
+        console.log(postLogin.account + '==' + postLogin.password);
+        window.location.href = '/';
     }
 
     return (
@@ -42,9 +65,9 @@ export default function Login(props) {
                     Login
                 </Box>
                 {
-                    step === LOGIN_STEP.InputAccount
-                    ? <AccountBox nextStepEvent={confirmAccount} />
-                    : <PasswordBox backEvent={back} />
+                    loginModel.step === LOGIN_STEP.InputAccount
+                    ? <AccountBox nextStepEvent={confirmAccount} value={loginModel.account} />
+                    : <PasswordBox backEvent={back} submitEvent={handleSubmit} />
                 }
             </Box>
         </Container>
@@ -57,13 +80,13 @@ function AccountBox(props) {
 
     function handleConfirm(e) {
         const account = document.getElementById('txt_account');
-        if (!account.value.trim()) {
-            e.preventDefault();
+        if (!account.value || !account.value.trim()) {
             setIsValid(false);
             account.focus();
+            e.preventDefault();
             return;
         }
-        props.nextStepEvent();
+        props.nextStepEvent(account.value.trim());
     }
 
     function handleAccountValueChanged(event) {
@@ -76,12 +99,13 @@ function AccountBox(props) {
     return (
         <Box m={2}>
             <form onSubmit={handleConfirm}>
-            <TextField id='txt_account'
-                label='Input Account'
-                error={!isValid} variant='outlined' margin='normal'
-                fullWidth required autoFocus
-                helperText="can't be empty" onChange={handleAccountValueChanged}
-            />
+                <TextField id='txt_account'
+                    label='Input Account'
+                    error={!isValid} variant='outlined' margin='normal'
+                    fullWidth required autoFocus
+                    defaultValue={props.value}
+                    helperText="can't be empty" onChange={handleAccountValueChanged}
+                />
             </form>
             <Box display='flex' flexDirection='row-reverse'>
                 <Box ml={1}>
@@ -98,8 +122,27 @@ function AccountBox(props) {
 
 function PasswordBox(props) {
 
+    const [isValid, setIsValid] = useState(true);
+
     function handleConfirmPassword(e) {
+        const password = document.getElementById('txt_password');
+        if (!password.value || !password.value.trim()) {
+            setIsValid(false);
+            e.preventDefault();
+            password.focus();
+            return;
+        }
         e.preventDefault();
+        props.submitEvent(password.value.trim());
+    }
+
+    function handlePasswordChanged() {
+        const password = document.getElementById('txt_password');
+        if (!password.value || !password.value.trim()) {
+            setIsValid(false);
+        } else if (!isValid) {
+            setIsValid(true);
+        }
     }
 
     return (
@@ -114,6 +157,7 @@ function PasswordBox(props) {
                 <TextField id='txt_password' type='password'
                     label='Input Password' variant='outlined' 
                     fullWidth autoFocus required
+                    error={!isValid} onChange={handlePasswordChanged}
                     helperText="can't be empty" />
             </Box>
             <Grid container justify='flex-end' spacing={1}>
