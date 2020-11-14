@@ -1,7 +1,13 @@
 ﻿import React, { useState } from 'react';
-import { Box, Button, Container, TextField, makeStyles } from '@material-ui/core'
+import { Box, Button, Container, TextField, makeStyles, Grid, IconButton } from '@material-ui/core'
+import { ArrowBack } from '@material-ui/icons';
 import { LogoLarge } from '../components/Logo'
 import './Login.css';
+
+const LOGIN_STEP = {
+    InputAccount: 0,
+    InputPassword: 1
+};
 
 const useStyles = makeStyles({
     loginTitle: {
@@ -22,8 +28,8 @@ export default function Login(props) {
         setStep(LOGIN_STEP.InputPassword);
     }
 
-    function confirmPassword() {
-
+    function back() {
+        setStep(LOGIN_STEP.InputAccount);
     }
 
     return (
@@ -31,14 +37,14 @@ export default function Login(props) {
         <Container maxWidth='xs'>
             <Box mt={20}>
                 <a href='/' className={classes.logo}><LogoLarge /></a>
-                <Box className={classes.loginTitle} 
+                <Box className={classes.loginTitle}
                     color='primary.main'>
                     Login
                 </Box>
                 {
                     step === LOGIN_STEP.InputAccount
                     ? <AccountBox nextStepEvent={confirmAccount} />
-                    : <PasswordBox confirmPasswordEvent={confirmPassword}/>
+                    : <PasswordBox backEvent={back} />
                 }
             </Box>
         </Container>
@@ -71,13 +77,13 @@ function AccountBox(props) {
         <Box m={2}>
             <form onSubmit={handleConfirm}>
             <TextField id='txt_account'
-                label='Input Account' 
-                error={!isValid} variant='outlined' margin='normal' 
+                label='Input Account'
+                error={!isValid} variant='outlined' margin='normal'
                 fullWidth required autoFocus
-                helperText="can't be empty" onChange={handleAccountValueChanged} 
+                helperText="can't be empty" onChange={handleAccountValueChanged}
             />
             </form>
-            <Box className='actions-row'>
+            <Box display='flex' flexDirection='row-reverse'>
                 <Box ml={1}>
                     <Button
                         variant='contained' color='primary'
@@ -91,24 +97,35 @@ function AccountBox(props) {
 }
 
 function PasswordBox(props) {
+
+    function handleConfirmPassword(e) {
+        e.preventDefault();
+    }
+
     return (
         <Box m={2}>
-            <TextField label='Input Password' variant='outlined' fullWidth margin='normal' />
-            <Box className='actions-row'>
-                <Box m={1}>
-                    <Button 
-                        variant='contained' color='primary'
-                        onClick={() => {props.confirmPasswordEvent()}}>Submit</Button>
-                    </Box>
-                <Box m={1}>
-                    <Button color='primary' variant='outlined'>Forgot</Button>
-                </Box>
+            <Box>
+                <IconButton color='primary' onClick={props.backEvent}>
+                    <ArrowBack />
+                </IconButton>
             </Box>
+            <Box component='form' my={1}
+                onSubmit={handleConfirmPassword}>
+                <TextField id='txt_password' type='password'
+                    label='Input Password' variant='outlined' 
+                    fullWidth autoFocus required
+                    helperText="can't be empty" />
+            </Box>
+            <Grid container justify='flex-end' spacing={1}>
+                <Grid item>
+                <Button color='primary' variant='outlined'>Forgot</Button>
+                </Grid>
+                <Grid item>
+                <Button
+                    variant='contained' color='primary'
+                    onClick={handleConfirmPassword}>Submit</Button>    
+                </Grid>
+            </Grid>
         </Box>
     );
 }
-
-const LOGIN_STEP = {
-    InputAccount: 0,
-    InputPassword: 1
-};

@@ -16,9 +16,3 @@ body {
   margin: auto !important;
   padding: 8px;
 }
-
-.actions-row {
-  display: flex;
-  flex-direction: row-reverse;
-  margin-top: 1rem;
-}
