@@ -3,6 +3,10 @@ a {
   color: #0366d6;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 code {
   color: #E01A76;
 }

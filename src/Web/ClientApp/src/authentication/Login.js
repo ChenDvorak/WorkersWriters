@@ -12,9 +12,6 @@ const useStyles = makeStyles({
     loginTitle: {
         'text-align': 'center',
         'font-size': '1.2rem'
-    },
-    logo: {
-        'text-decoration': 'none'
     }
 });
 
@@ -66,17 +63,17 @@ export default function Login(props) {
         const postedLogin = {
             ...postingLogin,
             busying: false
-        };
-        setLoginModel(postedLogin);
-        
-        
+        }; 
+        setTimeout(() => {
+            setLoginModel(postedLogin);            
+        }, 2000);
     }
 
     return (
         <div className='background'>
         <Container maxWidth='xs'>
             <Box mt={20}>
-                <a href='/' className={classes.logo}><LogoLarge /></a>
+                <LogoLarge />
                 <Box className={classes.loginTitle}
                     color='primary.main'>
                     Login
@@ -96,7 +93,7 @@ function AccountBox(props) {
     const [isValid, setIsValid] = useState(true);
 
     function handleConfirm(e) {
-        const account = document.getElementById('txt_account');
+        const account = document.getElementById('txt_email');
         if (!account.value || !account.value.trim()) {
             setIsValid(false);
             account.focus();
@@ -116,8 +113,8 @@ function AccountBox(props) {
     return (
         <Box m={2}>
             <form onSubmit={handleConfirm}>
-                <TextField id='txt_account'
-                    label='Input Email  ' type='email'
+                <TextField id='txt_email'
+                    label='Input email  ' type='email'
                     error={!isValid} variant='outlined' margin='normal'
                     fullWidth required autoFocus
                     defaultValue={props.value}
@@ -172,7 +169,7 @@ function PasswordBox(props) {
             <Box component='form' my={1}
                 onSubmit={handleConfirmPassword}>
                 <TextField id='txt_password' type='password'
-                    label='Input Password' variant='outlined' 
+                    label='Input password' variant='outlined' 
                     fullWidth autoFocus required
                     error={!isValid} onChange={handlePasswordChanged}
                     helperText="can't be empty" />
