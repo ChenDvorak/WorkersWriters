@@ -21,7 +21,8 @@ const useStyles = makeStyles({
 const loginInfo = {
     account: '',
     password: '',
-    step: LOGIN_STEP.InputAccount
+    step: LOGIN_STEP.InputAccount,
+    busying: false
 };
 
 export default function Login(props) {
@@ -37,6 +38,9 @@ export default function Login(props) {
         setLoginModel(newLogin);
     }
 
+    /**
+     * 从输入密码回退到输入账号的步骤
+     */
     function back() {
         const newLogin = {
             account: loginModel.account,
@@ -46,13 +50,26 @@ export default function Login(props) {
         setLoginModel(newLogin);
     }
 
+    /**
+     * 提交账号密码
+     * 提交登录事件
+     * @param {密码} passwordValue 
+     */
     function handleSubmit(passwordValue) {
-        const postLogin = {
+        const postingLogin = {
             account: loginModel.account,
-            password: passwordValue
+            password: passwordValue,
+            busying: true
         }
-        console.log(postLogin.account + '==' + postLogin.password);
-        window.location.href = '/';
+        setLoginModel(postingLogin);
+        
+        const postedLogin = {
+            ...postingLogin,
+            busying: false
+        };
+        setLoginModel(postedLogin);
+        
+        
     }
 
     return (
@@ -67,7 +84,7 @@ export default function Login(props) {
                 {
                     loginModel.step === LOGIN_STEP.InputAccount
                     ? <AccountBox nextStepEvent={confirmAccount} value={loginModel.account} />
-                    : <PasswordBox backEvent={back} submitEvent={handleSubmit} />
+                    : <PasswordBox backEvent={back} submitEvent={handleSubmit} busying={loginModel.busying} />
                 }
             </Box>
         </Container>
@@ -100,7 +117,7 @@ function AccountBox(props) {
         <Box m={2}>
             <form onSubmit={handleConfirm}>
                 <TextField id='txt_account'
-                    label='Input Account'
+                    label='Input Email  ' type='email'
                     error={!isValid} variant='outlined' margin='normal'
                     fullWidth required autoFocus
                     defaultValue={props.value}
@@ -166,7 +183,7 @@ function PasswordBox(props) {
                 </Grid>
                 <Grid item>
                 <Button
-                    variant='contained' color='primary'
+                    variant='contained' color='primary' disabled={!isValid || props.busying}
                     onClick={handleConfirmPassword}>Submit</Button>    
                 </Grid>
             </Grid>
