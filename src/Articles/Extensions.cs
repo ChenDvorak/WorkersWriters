@@ -16,7 +16,7 @@ namespace Applications
         public static void UseApplicotions(this ServiceCollection services)
         {
             services.AddScoped<IArcitlesManager, FictionsManager>();
-            services.AddScoped<IUsersManager, UsersManager>();
+            services.AddScoped(typeof(WriterManager));
         }
     }
 }

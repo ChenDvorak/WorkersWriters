@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DB
 {
@@ -14,6 +11,13 @@ namespace DB
             _configuration = configuration;
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite(_configuration.GetConnectionString("SQLite"));
+        }
 
+        public DbSet<Tables.User> Users { get; set; }
+        public DbSet<Tables.Article> Articles { get; set; }
+        public DbSet<Tables.Section> Sections { get; set; }
     }
 }
