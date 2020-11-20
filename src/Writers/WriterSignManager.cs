@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using SequentialGuid;
 
-namespace Applications.Users
+namespace Writers.Users
 {
-    public class WriterManager
+    public class WriterSignManager : ISigner
     {
-        private readonly DB.WWContext _db;
+        private readonly WWContext _db;
 
-        public WriterManager(WWContext db)
+        public WriterSignManager(WWContext db)
         {
             _db = db;
         }
@@ -25,32 +25,41 @@ namespace Applications.Users
         public Task<bool> ConfirmEmailAsync(string email)
         {
             if (string.IsNullOrWhiteSpace(email)) return Task.FromResult(false);
-            return _db.Users.AnyAsync(user => 
+            return _db.Users.AnyAsync(user =>
                 !user.IsLoggedOut && user.NormalizedEmail.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
-        /// Confirm password with eamil whether can sign in or not
+        /// Sign in
         /// </summary>
         /// <param name="email"></param>
         /// <param name="passwordHash"></param>
         /// <returns></returns>
-        public async Task<bool> ConfirmPasswordAsync(string email, string passwordHash)
+        public async Task<SignInResult> SignInAsync(string email, string passwordHash)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(passwordHash))
-                return false;
-            var writer = await _db.Users.SingleOrDefaultAsync(user => 
-                !user.IsLoggedOut && 
+                return SignInResult.Failed;
+            var writer = await _db.Users.SingleOrDefaultAsync(user =>
+                !user.IsLoggedOut &&
                 user.NormalizedEmail.Equals(email, StringComparison.OrdinalIgnoreCase) &&
                 user.PasswordHash.Equals(passwordHash, StringComparison.OrdinalIgnoreCase));
 
-            if (writer == null) return false;
+            if (writer == null) return SignInResult.Failed;
             writer.LogInStamp = SequentialGuidGenerator.Instance.NewGuid();
             int changedRow = await _db.SaveChangesAsync();
             if (changedRow == 1)
-                return true;
+                return SignInResult.Success(writer);
             throw new Exception("Dabebase save change exception occur");
         }
 
+        public async Task SignOutAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return;
+            var writer = await _db.Users
+                .SingleOrDefaultAsync(user => user.NormalizedEmail.Equals(email, StringComparison.OrdinalIgnoreCase));
+            if (writer == null) return;
+            writer.LogInStamp = Guid.Empty;
+            await _db.SaveChangesAsync();
+        }
     }
 }

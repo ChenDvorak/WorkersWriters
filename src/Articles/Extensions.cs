@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Applications.Articles;
 using Microsoft.Extensions.DependencyInjection;
-using Applications.Articles;
-using Applications.Users;
 
 namespace Applications
 {
@@ -16,7 +12,6 @@ namespace Applications
         public static void UseApplicotions(this ServiceCollection services)
         {
             services.AddScoped<IArcitlesManager, FictionsManager>();
-            services.AddScoped(typeof(WriterManager));
         }
     }
 }

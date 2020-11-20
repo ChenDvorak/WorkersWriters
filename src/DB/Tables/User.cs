@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DB.Tables
 {
-    public class User : BaseEntity
+    public class User : BaseEntity, ICloneable
     {
         [Required, StringLength(32)]
         public string Nickname { get; set; } = "";
@@ -19,5 +19,31 @@ namespace DB.Tables
         public bool IsLoggedOut { get; set; } = false;
         [Required]
         public Guid LogInStamp { get; set; } = Guid.Empty;
+        [Required]
+        public Share.UserRoles Role { get; set; } = Share.UserRoles.Writer;
+
+        /// <summary>
+        /// Deep clone
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return new User
+            { 
+                Nickname = Nickname,
+                NormalizedNickname = NormalizedNickname,
+                Email = Email,
+                NormalizedEmail = NormalizedEmail,
+                PasswordHash = PasswordHash,
+                IsLoggedOut = IsLoggedOut,
+                LogInStamp = LogInStamp,
+                Role = Role
+            };
+        }
+
+        public User DeepClone()
+        {
+            return Clone() as User;
+        }
     }
 }
